@@ -1,0 +1,46 @@
+version: "3.4"
+
+services:
+  solr:
+    image: solr
+    restart: always
+    ports:
+      - "8983:8983"
+    volumes:
+      - data:/var/solr
+    command:
+      - solr-precreate
+      - omeka
+
+  db:
+    image: mariadb:latest
+    restart: always
+    volumes:
+      - mariadb:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: blabla
+      MYSQL_DATABASE: omeka
+      MYSQL_USER: omeka
+      MYSQL_PASSWORD: omeka
+
+  omeka:
+    image: omeka_web
+    depends_on:
+      - db
+    restart: always
+    ports:
+      - "8485:80"
+    volumes:
+      - modules:/var/www/html/modules
+      - themes:/var/www/html/themes
+      - files:/var/www/html/files
+      - config:/var/www/html/config
+
+
+volumes:
+  mariadb:
+  modules:
+  themes:
+  files:
+  config:
+  data:
